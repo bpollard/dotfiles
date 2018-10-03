@@ -14,6 +14,7 @@
     magit
     go-mode
     nyan-mode
+    auto-complete
     company
     company-go))
 
@@ -36,6 +37,10 @@
 (setq company-idle-delay .3)
 (add-hook 'go-mode-hook (lambda ()
                           (set (make-local-variable 'company-backends) '(company-go))
+                          (company-mode)))
+
+(add-hook 'python-mode-hook (lambda ()
+                          (set (make-local-variable 'company-backends) '(company-jedi))
                           (company-mode)))
 
 (global-set-key (kbd "M-o") 'other-window)
