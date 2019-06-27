@@ -38,6 +38,9 @@ Plugin 'jceb/vim-orgmode'
 Plugin 'vim-scripts/SyntaxRange'
 Plugin 'tpope/vim-speeddating'
 Plugin 'mattn/calendar-vim'
+Plugin 'ycm-core/YouCompleteMe'
+Plugin 'vim-syntastic/syntastic'
+Plugin 'airblade/vim-gitgutter'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -68,6 +71,20 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 
 " show extranous whitespace not working
 " au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
+
+" youcompleteme
+let g:ycm_autoclose_preview_window_after_completion=1
+map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+
+" syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
 
 " keyboard shortcuts
 nnoremap <C-J> <C-W><C-J>
