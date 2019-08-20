@@ -135,17 +135,25 @@
   #+END_SRC
 
 * Reveal
+  #+begin_src emacs-lisp :tangle yes
+  (use-package ox-reveal
+  :ensure t)
+
+  (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
+  #+end_src
+
 * General emacs configuration
+   #+begin_src emacs-lisp
+   ;(setq ido-enable-flex-matching t)
+   ;(setq ido-everywhere t)
+   ;(ido-mode 1)
 
-;(setq ido-enable-flex-matching t)
-;(setq ido-everywhere t)
-;(ido-mode 1)
+   (electric-pair-mode 1)
+   (show-paren-mode 1)
 
-(electric-pair-mode 1)
-(show-paren-mode 1)
+   (tool-bar-mode -1)
+   (scroll-bar-mode -1)
 
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-
-(setq display-line-numbers 'relative)
-(global-display-line-numbers-mode t)
+   (setq display-line-numbers 'relative)
+   (global-display-line-numbers-mode t)
+   #+end_src

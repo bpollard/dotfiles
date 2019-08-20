@@ -38,7 +38,7 @@
  '(nyan-toggle-wavy-trail t t)
  '(package-selected-packages
    (quote
-    (yasnippet-snippets helm pytest org company-mode company-ansible flycheck doom-themes beacon nyan-mode ace-window company-terraform elpy magit which-key org-bullets use-package))))
+    (htmlize ox-reveal yasnippet-snippets helm pytest org company-mode company-ansible flycheck doom-themes beacon nyan-mode ace-window company-terraform elpy magit which-key org-bullets use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
