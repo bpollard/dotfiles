@@ -48,18 +48,40 @@
   (use-package pytest
     :ensure t)
   #+END_SRC
+* YAML
+  #+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode
+  :ensure t)
+  #+END_SRC
+
+  #+RESULTS:
 
 * Ansible
   #+BEGIN_SRC emacs-lisp
   (use-package ansible
-  :ensure t)
+  :ensure t
+  :config (add-hook 'yaml-mode-hook '(lambda () (ansible 1))))
 
   (use-package ansible-vault
   :ensure t)
 
   (use-package company-ansible
   :ensure t)
-  
+
+  (use-package ansible-doc
+  :ensure t
+  :config (add-hook 'yaml-mode-hook #'ansible-doc-mode))
+  #+END_SRC
+
+  #+RESULTS:
+
+* Terraform
+  #+BEGIN_SRC emacs-lisp
+  (use-package terraform-mode
+  :ensure t
+  :config
+    (terraform-format-on-save-mode t)
+    (add-hook 'terraform-mode-hook #'terraform-format-on-save-mode))
   #+END_SRC
 
 * Company
@@ -142,6 +164,7 @@
     :config
     (progn
       (helm-mode 1)
+      (require 'helm-config)
       (global-set-key (kbd "M-x") #'helm-M-x)
       (global-set-key (kbd "C-x C-f") #'helm-find-files)
     ))
@@ -163,10 +186,24 @@
 
    (electric-pair-mode 1)
    (show-paren-mode 1)
+   (highlight-indentation-mode 1)
 
    (tool-bar-mode -1)
    (scroll-bar-mode -1)
 
    (setq display-line-numbers 'relative)
    (global-display-line-numbers-mode t)
+
+   (setq org-agenda-files (list "~/.org/work.org"
+                                "~/.org/home.org"))
+
+   (setq backup-directory-alist '(("." . "~/.emacs.d/saves")))
+   (setq backup-by-copying t ; Don't delink hardlinks
+      delete-old-versions t  ; Clean up the backups
+      version-control t      ; Use version numbers on backups,
+      kept-new-versions 5    ; keep some new versions
+      kept-old-versions 2)   ; and some old ones, too
    #+end_src
+
+   #+RESULTS:
+   | ~/.org/work.org | ~/.org/home.org |
