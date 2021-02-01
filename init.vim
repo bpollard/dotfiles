@@ -41,6 +41,12 @@ Plugin 'mattn/calendar-vim'
 Plugin 'ycm-core/YouCompleteMe'
 Plugin 'vim-syntastic/syntastic'
 Plugin 'airblade/vim-gitgutter'
+Plugin 'preservim/nerdtree'
+Plugin 'juliosueiras/vim-terraform-completion'
+Plugin 'towolf/vim-helm'
+Plugin 'rafi/awesome-vim-colorschemes'
+Plugin 'vimwiki/vimwiki'
+Plugin 'hashivim/vim-terraform'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -57,11 +63,19 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
+" colors
+set background=dark
+set termguicolors
+"colorscheme oceanicnext
+colorscheme archery
+
+
 " neovim python3 path
 let g:python3_host_prog = '~/venv/bin/python'
 
 " airline items
-let g:airline_theme = 'raven'
+"let g:airline_theme = 'raven'
+let g:airline_theme = 'archery'
 let g:airline_powerline_fonts = 1
 
 " ctrl-p item
@@ -91,3 +105,29 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
+
+" nerdtree
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+
+" terraform
+" (Optional)Remove Info(Preview) window
+set completeopt-=preview
+
+" (Optional)Hide Info(Preview) window after completions
+autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+
+" (Optional) Enable terraform plan to be include in filter
+let g:syntastic_terraform_tffilter_plan = 1
+
+" (Optional) Default: 0, enable(1)/disable(0) plugin's keymapping
+let g:terraform_completion_keys = 1
+
+" (Optional) Default: 1, enable(1)/disable(0) terraform module registry completion
+let g:terraform_registry_module_completion = 0
+
+" terraform format
+let g:terraform_fmt_on_save=1
