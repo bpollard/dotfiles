@@ -1,209 +1,310 @@
+#+title My Emacs Configuration
+#+PROPERTY: header-args:emacs-lisp :tangle ~/.emacs.d/init.el
 #+STARTUP: overview
 
-* Org Mode
-  #+BEGIN_SRC emacs-lisp
-  (use-package org
-  :ensure t)
+* General Emacs Configuration
+** Setup Package and Configure Melpa
 
-  (use-package org-bullets
-    :ensure t
-    :init
-    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-  #+END_SRC
+   #+begin_src emacs-lisp
 
-* Yasnippet
-  #+BEGIN_SRC emacs-lisp
-  (use-package yasnippet
-    :ensure t
-    :config
-    (yas-global-mode 1)
-  )
+   (require 'package)
+   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                            ("elpa" . "https://elpa.gnu.org/packages/")
+                            ("org" . "https://orgmode.org/elpa/")))
+   (package-initialize)
+   (unless package-archive-contents
+     (package-refresh-contents))
 
-  (use-package yasnippet-snippets
-    :ensure t
-  )
-  #+END_SRC
+   #+end_src
+   
+** Install and Configure Use-Package
 
-* Which Key
-  #+BEGIN_SRC emacs-lisp
-  (use-package which-key
-    :ensure t
-    :config (which-key-mode))
-  #+END_SRC
+   #+begin_src emacs-lisp
 
-* Magit
-  #+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :ensure t
-    :init
-    (global-set-key (kbd "C-x g") 'magit-status))
-  #+END_SRC
+   (unless (package-installed-p 'use-package)
+   (package-install 'use-package))
 
-* ELPY
-  #+BEGIN_SRC emacs-lisp
-  (use-package elpy
-    :ensure t
-    :init (elpy-enable))
+   (require 'use-package)
+   (setq use-package-always-ensure t)
+ 
+   #+end_src
 
-  (use-package pytest
-    :ensure t)
-  #+END_SRC
-* YAML
-  #+BEGIN_SRC emacs-lisp
-  (use-package yaml-mode
-  :ensure t)
-  #+END_SRC
+** Interface Tweaks
 
-  #+RESULTS:
+   #+begin_src emacs-lisp
+ 
+   (scroll-bar-mode -1)
+   (tool-bar-mode -1)
+   (set-fringe-mode 3)   ; Adjusts space on the left and right
+   (menu-bar-mode -1)
+   ;;(setq visible-bell t) ; Might be annoying in Mac. How to do an if here?
 
-* Ansible
-  #+BEGIN_SRC emacs-lisp
-  (use-package ansible
-  :ensure t
-  :config (add-hook 'yaml-mode-hook '(lambda () (ansible 1))))
-
-  (use-package ansible-vault
-  :ensure t)
-
-  (use-package company-ansible
-  :ensure t)
-
-  (use-package ansible-doc
-  :ensure t
-  :config (add-hook 'yaml-mode-hook #'ansible-doc-mode))
-  #+END_SRC
-
-  #+RESULTS:
-
-* Terraform
-  #+BEGIN_SRC emacs-lisp
-  (use-package terraform-mode
-  :ensure t
-  :config
-    (terraform-format-on-save-mode t)
-    (add-hook 'terraform-mode-hook #'terraform-format-on-save-mode))
-  #+END_SRC
-
-* Company
-  #+BEGIN_SRC emacs-lisp
-  (use-package company
-    :ensure t
-    :init
-    (company-mode t)
-    :config
-    (progn
-      (add-hook 'after-init-hook 'global-company-mode)
-      (add-to-list 'company-backends 'company-ansible)
-    ))
-
-
-    (use-package company-terraform
-      :ensure t
-      :config (company-terraform-init))
-  #+END_SRC
-
-* Ace Window
-  #+BEGIN_SRC emacs-lisp
-  (use-package ace-window
-    :ensure t
-    :bind ("M-p" . ace-window))
-  #+END_SRC
-
-* Nyan Cat
-  #+BEGIN_SRC emacs-lisp
-  (use-package nyan-mode
-    :ensure t
-    :config
-    (nyan-mode t)
-    (nyan-toggle-wavy-trail)
-    (nyan-start-animation))
-  #+END_SRC
-
-* Beacon
-  #+BEGIN_SRC emacs-lisp
-  (use-package beacon
-    :ensure t
-    :config (beacon-mode 1))
-  #+END_SRC
-
-* Doom Themes
-  #+BEGIN_SRC emacs-lisp
-    (use-package doom-themes
-    :ensure t
-    :config (load-theme 'doom-dracula t)
-    :custom
-    (doom-dracula-brighter-comments t)
-    (doom-dracula-brighter-modeline t)
-    (doom-dracula-colorful-headers t)
-    (doom-dracula-comment-bg t))
-  #+END_SRC
-
-* Flycheck
-  #+BEGIN_SRC emacs-lisp
-  (use-package flycheck
-    :ensure t
-    :config (global-flycheck-mode))
-
-    (when (require 'flycheck nil t)
-    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-    (add-hook 'elpy-mode-hook 'flycheck-mode))
-  #+END_SRC
-
-* AVY
-  #+BEGIN_SRC emacs-lisp
-  (use-package avy
-    :ensure t
-    :bind ("M-s" . avy-goto-char))
-  #+END_SRC
-
-* Helm
+   #+end_src
   
-  #+BEGIN_SRC emacs-lisp
+** Font
+
+   #+begin_src emacs-lisp
+
+   (set-face-attribute 'default nil :font "Fira Code Retina" :height 150)
+
+   #+end_src
+  
+** Line Numbers
+
+   #+begin_src emacs-lisp
+
+   (column-number-mode)
+   (global-display-line-numbers-mode t)
+   ;;(dolist (mode '(text-mode-hook
+   ;;                prog-mode-hook
+   ;;                conf-mode-hook))
+   ;;  (add-hook mode (lambda () (display-line-numbers-mode 1))))
+   ;;  
+   ;;;; Not sure this is needed. "Override some modes which derive from the above"
+   ;;(dolist (mode '(org-mode-hook))
+   ;;(add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+   #+end_src
+   
+** Doom Modeline
+
+   #+begin_src emacs-lisp
+
+   (use-package all-the-icons)
+   (use-package doom-modeline
+     :hook (after-init . doom-modeline-mode))
+
+   #+end_src
+   
+** Doom Theme
+   #+begin_src emacs-lisp
+
+   (use-package doom-themes
+     :config
+     (setq doom-themes-enable-bold t
+           doom-themes-enable-italic t)
+     (load-theme 'doom-palenight t)
+     (doom-themes-org-config))
+
+   #+end_src
+
+** Rainbow Delimiters
+
+   #+begin_src emacs-lisp
+
+   (use-package rainbow-delimiters
+     :hook (prog-mode . rainbow-delimiters-mode))
+
+   #+end_src
+
+** Beacon
+   #+begin_src emacs-lisp
+   (use-package beacon
+   :config (beacon-mode 1))
+   #+end_src
+* Org Mode
+** Org Mode
+
+  #+begin_src emacs-lisp
+  
+  ;; Org for the win!!
+  (use-package org
+    :config
+    (setq org-ellipsis " ▾"
+      org-hide-emphasis-markers t)
+
+    (setq org-agenda-start-with-log-mode t)
+    (setq org-log-done 'time)
+    (setq org-log-into-drawer t)
+
+    (require 'org-habit)
+    (add-to-list 'org-modules 'org-habit)
+    (setq org-habit-graph-colum 60)
+
+    ;; Save all org buffers if we've refiled
+    (advice-add 'org-refile :after 'org-save-all-org-buffers)
+
+    (setq org-agenda-files
+        '("~/Dropbox/org/work.org")))
+
+  #+end_src
+  
+** Org Bullets
+   
+   #+begin_src emacs-lisp
+
+    ;; Use better bullets
+    (use-package org-bullets
+      :after org
+      :hook (org-mode . org-bullets-mode)
+      :custom
+      (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+      (set-face-attribute 'org-document-title nil :font "Cantarell" :weight 'bold :height 1.3)
+      (dolist (face '((org-level-1 . 1.2)
+                      (org-level-2 . 1.1)
+                      (org-level-3 . 1.05)
+                      (org-level-4 . 1.0)
+                      (org-level-5 . 1.1)
+                      (org-level-6 . 1.1)
+                      (org-level-7 . 1.1)
+                      (org-level-8 . 1.1)))
+      (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+
+  #+end_src
+  
+** Tangle on Save
+
+   #+begin_src emacs-lisp
+
+   #+end_src
+   
+* Helm
+
+  #+begin_src emacs-lisp
+
   (use-package helm
-    :ensure t
     :config
     (progn
       (helm-mode 1)
       (require 'helm-config)
       (global-set-key (kbd "M-x") #'helm-M-x)
-      (global-set-key (kbd "C-x C-f") #'helm-find-files)
-    ))
-  #+END_SRC
+      (global-set-key (kbd "C-x C-f") #'helm-find-files)))
+ 
+  #+end_src
+  
+* Tools
+** Be Evil
 
-* Reveal
   #+begin_src emacs-lisp
-  (use-package ox-reveal
-  :ensure t)
 
-  (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
+  (use-package evil
+    :init
+    (setq evil-want-keybinding nil)
+    (setq evil-want-intergration nil)
+    :config
+    (evil-mode 1))
+    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+
+  ;; Collections of Evils
+  (use-package evil-collection
+    :after evil
+    :ensure t
+    :config
+    (evil-collection-init))
+ 
+  #+end_src
+  
+** Magit
+
+  #+begin_src emacs-lisp
+ 
+  (use-package magit)
+  ;;:custom
+  ;;(magit-display-buffer-function #'magit-display-same-window-except-diff-v1))
+
+  (use-package forge
+    :after magit)
+ 
   #+end_src
 
-* General emacs configuration
+** Hydra
+
+  #+begin_src emacs-lisp
+
+  (use-package hydra)
+
+  (defhydra hydra-text-scale (:timeout 4)
+  "scale text"
+    ("j" text-scale-increase "in")
+    ("k" text-scale-decrease "out")
+    ("f" nil "finished" :exit t))
+ 
+  #+end_src
+  
+** LSP
+
    #+begin_src emacs-lisp
-   ;(setq ido-enable-flex-matching t)
-   ;(setq ido-everywhere t)
-   ;(ido-mode 1)
+ 
+   (use-package lsp-mode
+     :commands (lsp lsp-deferred)
+     :init
+     (setq lsp-keymap-prefix "C-c l")
+     :config
+     (lsp-enable-which-key-integration t))
+ 
+   (use-package lsp-ui
+     :hook (lsp-mode . lsp-ui-mode)
+     :custom
+     (lsp-ui-doc-position 'bottom))
+ 
+   #+end_src
+   
+** Company
 
-   (electric-pair-mode 1)
-   (show-paren-mode 1)
-   (highlight-indentation-mode 1)
+   #+begin_src emacs-lisp
 
-   (tool-bar-mode -1)
-   (scroll-bar-mode -1)
+   (use-package company
+     :after lsp-mode
+     :hook (prog-mode . company-mode)
+     :bind (:map company-active-map
+            ("<tab>" . company-complete-selection))
+           (:map lsp-mode-map
+            ("<tab>" . company-indent-or-complete-common))
+     :custom
+     (company-minimum-prefix-length 1)
+     (company-idle-delay 0.0))
 
-   (setq display-line-numbers 'relative)
-   (global-display-line-numbers-mode t)
+   #+end_src
+* Development
+** Debugging
 
-   (setq org-agenda-files (list "~/.org/work.org"
-                                "~/.org/home.org"))
-
-   (setq backup-directory-alist '(("." . "~/.emacs.d/saves")))
-   (setq backup-by-copying t ; Don't delink hardlinks
-      delete-old-versions t  ; Clean up the backups
-      version-control t      ; Use version numbers on backups,
-      kept-new-versions 5    ; keep some new versions
-      kept-old-versions 2)   ; and some old ones, too
+   #+begin_src emacs-lisp
+   (use-package dap-mode)
    #+end_src
 
-   #+RESULTS:
-   | ~/.org/work.org | ~/.org/home.org |
+** Python
+
+   #+begin_src emacs-lisp
+
+   (use-package python-mode
+     :ensure t
+     :hook (python-mode . lsp-deferred)
+     :custom
+     (python-shell-interpreter "python3"))
+     
+   ;; Unable to get this to work. Error regarding content returned.
+   ;;(use-package lsp-jedi
+     ;;:ensure t
+     ;;:config
+     ;;(with-eval-after-load "lsp-mode"
+       ;;(add-to-list 'lsp-disabled-clients 'pyls)
+       ;;(add-to-list 'lsp-enabled-clients 'jedi)))
+
+   #+end_src
+
+** Terraform
+   #+begin_src emacs-lisp
+
+   (use-package terraform-mode
+   :init
+   (add-hook 'terraform-mode-hook #'terraform-format-on-save-mode))
+
+   #+end_src
+
+** YaSnippets
+   #+begin_src emacs-lisp
+   
+   (use-package yasnippet
+   :config
+   (yas-reload-all)
+   (yas-global-mode))
+
+   (use-package yasnippet-snippets
+   :after yasnippet)
+   
+   #+end_src
+* Remaining Items
+ 
+  #+begin_src emacs-lisp
+  #+end_src
